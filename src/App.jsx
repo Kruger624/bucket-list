@@ -2,10 +2,12 @@ import { useState } from 'react'
 import Header from './components/Header'
 import NamePrompt from './components/NamePrompt'
 import ActiveListView from './components/ActiveListView'
+import UpcomingView from './components/UpcomingView'
 import MemoriesView from './components/MemoriesView'
 import AddItemModal from './components/AddItemModal'
 import EditItemModal from './components/EditItemModal'
 import MarkDoneModal from './components/MarkDoneModal'
+import MarkBookedModal from './components/MarkBookedModal'
 import { useLocalName } from './hooks/useLocalName'
 import { useCategories } from './hooks/useCategories'
 import { useItems } from './hooks/useItems'
@@ -23,6 +25,7 @@ export default function App() {
   const [showAdd, setShowAdd] = useState(false)
   const [editingItem, setEditingItem] = useState(null)
   const [markDoneItem, setMarkDoneItem] = useState(null)
+  const [markBookedItem, setMarkBookedItem] = useState(null)
 
   if (!currentName || editingName) {
     return (
@@ -38,6 +41,10 @@ export default function App() {
   async function handleStatusChange(item, status) {
     if (status === 'done') {
       setMarkDoneItem(item)
+      return
+    }
+    if (status === 'booked') {
+      setMarkBookedItem(item)
       return
     }
     await updateItem(item.id, { status })
@@ -70,11 +77,13 @@ export default function App() {
       />
 
       <main className="mx-auto max-w-3xl px-4 py-4">
-        {view === 'active' ? (
+        {view === 'active' && (
           <ActiveListView items={items} onStatusChange={handleStatusChange} {...sharedListProps} />
-        ) : (
-          <MemoriesView items={items} {...sharedListProps} />
         )}
+        {view === 'upcoming' && (
+          <UpcomingView items={items} onStatusChange={handleStatusChange} {...sharedListProps} />
+        )}
+        {view === 'memories' && <MemoriesView items={items} {...sharedListProps} />}
       </main>
 
       {showAdd && (
@@ -102,6 +111,14 @@ export default function App() {
           item={markDoneItem}
           onClose={() => setMarkDoneItem(null)}
           onConfirm={(fields) => updateItem(markDoneItem.id, { status: 'done', ...fields })}
+        />
+      )}
+
+      {markBookedItem && (
+        <MarkBookedModal
+          item={markBookedItem}
+          onClose={() => setMarkBookedItem(null)}
+          onConfirm={(fields) => updateItem(markBookedItem.id, { status: 'booked', ...fields })}
         />
       )}
     </div>

@@ -2,7 +2,8 @@ import StatusBadge from './StatusBadge'
 import StatusPicker from './StatusPicker'
 import InterestButton from './InterestButton'
 import CategoryBadge from './CategoryBadge'
-import { formatDate } from '../lib/format'
+import { formatDate, formatDateRange } from '../lib/format'
+import { downloadIcs } from '../lib/ics'
 
 export default function ItemCard({
   item,
@@ -62,6 +63,21 @@ export default function ItemCard({
         >
           🔗 {item.link}
         </a>
+      )}
+
+      {item.status === 'booked' && item.planned_start_date && (
+        <div className="mt-3 flex flex-wrap items-center gap-2 rounded-lg bg-tan px-3 py-2">
+          <span className="text-sm font-medium text-ink">
+            📅 {formatDateRange(item.planned_start_date, item.planned_end_date)}
+          </span>
+          <button
+            type="button"
+            onClick={() => downloadIcs(item)}
+            className="rounded-lg border border-borderSoft bg-card px-2 py-1 text-xs font-medium text-ink hover:bg-parchment"
+          >
+            Add to calendar
+          </button>
+        </div>
       )}
 
       <div className="mt-3">

@@ -11,6 +11,8 @@ export default function EditItemModal({ item, categories, createCategory, onClos
   const [addedBy, setAddedBy] = useState(item.added_by || '')
   const [memoryNote, setMemoryNote] = useState(item.memory_note || '')
   const [photoLink, setPhotoLink] = useState(item.photo_link || '')
+  const [startDate, setStartDate] = useState(item.planned_start_date || '')
+  const [endDate, setEndDate] = useState(item.planned_end_date || '')
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
 
@@ -41,7 +43,9 @@ export default function EditItemModal({ item, categories, createCategory, onClos
         category_id: finalCategoryId,
         added_by: addedBy.trim() || null,
         memory_note: memoryNote.trim() || null,
-        photo_link: photoLink.trim() || null
+        photo_link: photoLink.trim() || null,
+        planned_start_date: startDate || null,
+        planned_end_date: endDate || null
       })
       onClose()
     } catch (err) {
@@ -104,6 +108,31 @@ export default function EditItemModal({ item, categories, createCategory, onClos
             className="rounded-lg border border-borderSoft bg-parchment px-3 py-2 text-sm font-normal text-ink placeholder:text-inkMuted focus:border-ink focus:outline-none"
           />
         </label>
+
+        {item.status === 'booked' && (
+          <div className="flex flex-col gap-3 rounded-lg bg-tan p-3">
+            <p className="text-xs font-medium text-inkMuted">Planned date</p>
+            <label className="flex flex-col gap-1 text-sm font-medium text-ink">
+              Start date
+              <input
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                className="rounded-lg border border-borderSoft bg-parchment px-3 py-2 text-sm font-normal text-ink focus:border-ink focus:outline-none"
+              />
+            </label>
+            <label className="flex flex-col gap-1 text-sm font-medium text-ink">
+              End date (optional)
+              <input
+                type="date"
+                value={endDate}
+                min={startDate || undefined}
+                onChange={(e) => setEndDate(e.target.value)}
+                className="rounded-lg border border-borderSoft bg-parchment px-3 py-2 text-sm font-normal text-ink focus:border-ink focus:outline-none"
+              />
+            </label>
+          </div>
+        )}
 
         {item.status === 'done' && (
           <div className="flex flex-col gap-3 rounded-lg bg-tan p-3">

@@ -21,24 +21,24 @@ export default function Header({ view, onViewChange, currentName, onEditName, on
         </button>
       </div>
       <nav className="mx-auto flex max-w-3xl gap-1 px-4 pb-2">
-        <button
-          type="button"
-          onClick={() => onViewChange('active')}
-          className={`rounded-full px-3 py-1.5 text-sm font-medium transition ${
-            view === 'active' ? 'bg-ink text-parchment' : 'text-inkMuted hover:bg-tan hover:text-ink'
-          }`}
-        >
-          List
-        </button>
-        <button
-          type="button"
-          onClick={() => onViewChange('memories')}
-          className={`rounded-full px-3 py-1.5 text-sm font-medium transition ${
-            view === 'memories' ? 'bg-ink text-parchment' : 'text-inkMuted hover:bg-tan hover:text-ink'
-          }`}
-        >
-          Memories
-        </button>
+        {[
+          { value: 'active', label: 'List' },
+          { value: 'upcoming', label: 'Upcoming' },
+          { value: 'memories', label: 'Memories' }
+        ].map((tab) => (
+          <button
+            key={tab.value}
+            type="button"
+            onClick={() => onViewChange(tab.value)}
+            className={`rounded-full px-3 py-1.5 text-sm font-medium transition ${
+              view === tab.value
+                ? 'bg-ink text-parchment'
+                : 'text-inkMuted hover:bg-tan hover:text-ink'
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
       </nav>
     </header>
   )

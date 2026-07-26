@@ -27,6 +27,13 @@ done.
 > group using their own Supabase project, but tighten these policies before exposing the app
 > publicly.
 
+### Applying schema updates (v2+)
+
+Changes made after the initial launch live in [`supabase/migrations/`](supabase/migrations) as
+numbered `.sql` files. For an existing project, run any new migration files in order in the SQL
+Editor — each is written to be safe to re-run (`if not exists` / `if exists` guards). A fresh
+project should run `schema.sql` first, then every file in `supabase/migrations/` in order.
+
 ## 2. Configure environment variables
 
 Copy the example file and fill in your project details:

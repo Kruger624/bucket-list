@@ -16,7 +16,7 @@ export default function App() {
   const [editingName, setEditingName] = useState(false)
   const [view, setView] = useState('active')
 
-  const { categories, createCategory } = useCategories()
+  const { categories, createCategory, colorFor } = useCategories()
   const { items, addItem, updateItem, deleteItem } = useItems()
   const { byItem: interestByItem, toggle: toggleInterest } = useInterest()
 
@@ -51,6 +51,7 @@ export default function App() {
 
   const sharedListProps = {
     categories,
+    colorFor,
     currentName,
     interestByItem,
     onToggleInterest: (itemId) => toggleInterest(itemId, currentName),

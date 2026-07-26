@@ -54,17 +54,17 @@ export default function EditItemModal({ item, categories, createCategory, onClos
   return (
     <Modal title="Edit item" onClose={onClose}>
       <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-        <label className="flex flex-col gap-1 text-sm font-medium text-slate-700">
+        <label className="flex flex-col gap-1 text-sm font-medium text-ink">
           Title
           <input
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="rounded-lg border border-slate-300 px-3 py-2 text-sm font-normal focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
+            className="rounded-lg border border-borderSoft bg-parchment px-3 py-2 text-sm font-normal text-ink placeholder:text-inkMuted focus:border-ink focus:outline-none"
           />
         </label>
 
-        <label className="flex flex-col gap-1 text-sm font-medium text-slate-700">
+        <label className="flex flex-col gap-1 text-sm font-medium text-ink">
           Category
           <CategorySelect
             categories={categories}
@@ -75,68 +75,68 @@ export default function EditItemModal({ item, categories, createCategory, onClos
           />
         </label>
 
-        <label className="flex flex-col gap-1 text-sm font-medium text-slate-700">
+        <label className="flex flex-col gap-1 text-sm font-medium text-ink">
           Note (optional)
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             rows={2}
-            className="rounded-lg border border-slate-300 px-3 py-2 text-sm font-normal focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
+            className="rounded-lg border border-borderSoft bg-parchment px-3 py-2 text-sm font-normal text-ink placeholder:text-inkMuted focus:border-ink focus:outline-none"
           />
         </label>
 
-        <label className="flex flex-col gap-1 text-sm font-medium text-slate-700">
+        <label className="flex flex-col gap-1 text-sm font-medium text-ink">
           Link (optional)
           <input
             type="url"
             value={link}
             onChange={(e) => setLink(e.target.value)}
-            className="rounded-lg border border-slate-300 px-3 py-2 text-sm font-normal focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
+            className="rounded-lg border border-borderSoft bg-parchment px-3 py-2 text-sm font-normal text-ink placeholder:text-inkMuted focus:border-ink focus:outline-none"
           />
         </label>
 
-        <label className="flex flex-col gap-1 text-sm font-medium text-slate-700">
+        <label className="flex flex-col gap-1 text-sm font-medium text-ink">
           Added by
           <input
             type="text"
             value={addedBy}
             onChange={(e) => setAddedBy(e.target.value)}
-            className="rounded-lg border border-slate-300 px-3 py-2 text-sm font-normal focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
+            className="rounded-lg border border-borderSoft bg-parchment px-3 py-2 text-sm font-normal text-ink placeholder:text-inkMuted focus:border-ink focus:outline-none"
           />
         </label>
 
         {item.status === 'done' && (
-          <div className="flex flex-col gap-3 rounded-lg bg-slate-50 p-3">
-            <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Memory</p>
-            <label className="flex flex-col gap-1 text-sm font-medium text-slate-700">
+          <div className="flex flex-col gap-3 rounded-lg bg-tan p-3">
+            <p className="text-xs font-medium text-inkMuted">Memory</p>
+            <label className="flex flex-col gap-1 text-sm font-medium text-ink">
               Memory note (optional)
               <textarea
                 value={memoryNote}
                 onChange={(e) => setMemoryNote(e.target.value)}
                 rows={3}
                 placeholder="How did it go?"
-                className="rounded-lg border border-slate-300 px-3 py-2 text-sm font-normal focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
+                className="rounded-lg border border-borderSoft bg-parchment px-3 py-2 text-sm font-normal text-ink placeholder:text-inkMuted focus:border-ink focus:outline-none"
               />
             </label>
-            <label className="flex flex-col gap-1 text-sm font-medium text-slate-700">
+            <label className="flex flex-col gap-1 text-sm font-medium text-ink">
               Photo link (optional)
               <input
                 type="url"
                 value={photoLink}
                 onChange={(e) => setPhotoLink(e.target.value)}
                 placeholder="Link to shared album"
-                className="rounded-lg border border-slate-300 px-3 py-2 text-sm font-normal focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
+                className="rounded-lg border border-borderSoft bg-parchment px-3 py-2 text-sm font-normal text-ink placeholder:text-inkMuted focus:border-ink focus:outline-none"
               />
             </label>
           </div>
         )}
 
-        {error && <p className="text-sm text-red-600">{error}</p>}
+        {error && <p className="text-sm text-[#D85A30]">{error}</p>}
 
         <button
           type="submit"
           disabled={submitting}
-          className="mt-2 w-full rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-700 disabled:opacity-60"
+          className="mt-2 w-full rounded-lg border-2 border-ink px-4 py-2 text-sm font-medium text-ink transition hover:bg-ink hover:text-parchment disabled:opacity-60"
         >
           {submitting ? 'Saving…' : 'Save changes'}
         </button>

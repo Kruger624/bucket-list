@@ -6,6 +6,7 @@ import { ACTIVE_SORT_OPTIONS, filterItems, sortItems, groupByCategory } from '..
 export default function ActiveListView({
   items,
   categories,
+  colorFor,
   currentName,
   interestByItem,
   onToggleInterest,
@@ -47,9 +48,12 @@ export default function ActiveListView({
       />
 
       {visible.length === 0 && (
-        <p className="py-12 text-center text-sm text-slate-400">
-          Nothing here yet. Add something you want to do together!
-        </p>
+        <div className="rounded-card border border-dashed border-borderSoft py-12 text-center">
+          <p className="font-serif text-lg text-ink">Nothing here yet</p>
+          <p className="mt-1 text-sm text-inkMuted">
+            Add something you want to do together — the list starts here.
+          </p>
+        </div>
       )}
 
       <div className="flex flex-col gap-6">
@@ -57,8 +61,8 @@ export default function ActiveListView({
           <CategoryGroup
             key={group.category.id ?? 'uncategorized'}
             title={group.category.name}
+            color={colorFor(group.category.id)}
             items={group.items}
-            variant="active"
             currentName={currentName}
             interestByItem={interestByItem}
             onToggleInterest={onToggleInterest}

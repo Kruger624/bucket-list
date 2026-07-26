@@ -20,13 +20,13 @@ export default function SearchFilterBar({
         value={search}
         onChange={(e) => onSearchChange(e.target.value)}
         placeholder="Search title or description…"
-        className="w-full flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
+        className="w-full flex-1 rounded-lg border border-borderSoft bg-card px-3 py-2 text-sm text-ink placeholder:text-inkMuted focus:border-ink focus:outline-none"
       />
       <div className="flex flex-wrap gap-2">
         <select
           value={categoryFilter}
           onChange={(e) => onCategoryFilterChange(e.target.value)}
-          className="rounded-lg border border-slate-300 px-2 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
+          className="rounded-lg border border-borderSoft bg-card px-2 py-2 text-sm text-ink focus:border-ink focus:outline-none"
         >
           <option value="">All categories</option>
           {categories.map((c) => (
@@ -40,7 +40,7 @@ export default function SearchFilterBar({
           <select
             value={statusFilter}
             onChange={(e) => onStatusFilterChange(e.target.value)}
-            className="rounded-lg border border-slate-300 px-2 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
+            className="rounded-lg border border-borderSoft bg-card px-2 py-2 text-sm text-ink focus:border-ink focus:outline-none"
           >
             <option value="">All statuses</option>
             {STATUSES.filter((s) => s.value !== 'done').map((s) => (
@@ -54,7 +54,7 @@ export default function SearchFilterBar({
         <select
           value={sortBy}
           onChange={(e) => onSortByChange(e.target.value)}
-          className="rounded-lg border border-slate-300 px-2 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
+          className="rounded-lg border border-borderSoft bg-card px-2 py-2 text-sm text-ink focus:border-ink focus:outline-none"
         >
           {sortOptions.map((opt) => (
             <option key={opt.value} value={opt.value}>

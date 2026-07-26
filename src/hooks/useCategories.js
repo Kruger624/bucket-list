@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { supabase } from '../lib/supabaseClient'
+import { buildCategoryColorMap, MISC_COLOR } from '../lib/categoryColors'
 
 export function useCategories() {
   const [categories, setCategories] = useState([])
@@ -56,5 +57,8 @@ export function useCategories() {
     return data
   }, [categories])
 
-  return { categories, loading, createCategory }
+  const colorMap = useMemo(() => buildCategoryColorMap(categories), [categories])
+  const colorFor = useCallback((categoryId) => colorMap.get(categoryId) || MISC_COLOR, [colorMap])
+
+  return { categories, loading, createCategory, colorFor }
 }

@@ -12,8 +12,8 @@ export default defineConfig({
         name: 'Our Bucket List',
         short_name: 'Bucket List',
         description: 'Shared bucket list for things we want to do together',
-        theme_color: '#0f172a',
-        background_color: '#0f172a',
+        theme_color: '#FBF6EE',
+        background_color: '#FBF6EE',
         display: 'standalone',
         start_url: '/',
         icons: [

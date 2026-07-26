@@ -21,7 +21,7 @@ export default function CategorySelect({ categories, value, onChange, newName, o
       <select
         value={creating ? NEW_VALUE : value}
         onChange={handleSelect}
-        className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
+        className="w-full rounded-lg border border-borderSoft bg-parchment px-3 py-2 text-sm text-ink focus:border-ink focus:outline-none"
       >
         <option value="" disabled>
           Choose a category…
@@ -40,7 +40,7 @@ export default function CategorySelect({ categories, value, onChange, newName, o
           value={newName}
           onChange={(e) => onNewNameChange(e.target.value)}
           placeholder="New category name"
-          className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
+          className="w-full rounded-lg border border-borderSoft bg-parchment px-3 py-2 text-sm text-ink focus:border-ink focus:outline-none"
         />
       )}
     </div>

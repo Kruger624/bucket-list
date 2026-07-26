@@ -1,17 +1,14 @@
 import { useEffect, useState } from 'react'
 import Modal from './Modal'
 import PersonAvatar from './PersonAvatar'
+import PersonForm from './PersonForm'
 import { formatDate } from '../lib/format'
 import { supabase } from '../lib/supabaseClient'
 
-export default function PersonProfileModal({ person, onUpdatePerson, onOpenItem, onClose }) {
+export default function PersonProfileModal({ person, onUpdatePerson, onDeletePerson, onOpenItem, onClose }) {
   const [memories, setMemories] = useState([])
   const [loading, setLoading] = useState(true)
   const [editing, setEditing] = useState(false)
-  const [name, setName] = useState(person.name)
-  const [bio, setBio] = useState(person.bio || '')
-  const [photoFile, setPhotoFile] = useState(null)
-  const [saving, setSaving] = useState(false)
 
   useEffect(() => {
     let cancelled = false
@@ -20,8 +17,9 @@ export default function PersonProfileModal({ person, onUpdatePerson, onOpenItem,
       setLoading(true)
       const { data, error } = await supabase
         .from('item_people')
-        .select('item:items(id, title, created_at, category:categories(name))')
+        .select('item:items!inner(id, title, created_at, category:categories(name))')
         .eq('person_id', person.id)
+        .eq('item.status', 'done')
 
       if (!cancelled) {
         if (error) {
@@ -39,67 +37,28 @@ export default function PersonProfileModal({ person, onUpdatePerson, onOpenItem,
     }
   }, [person.id])
 
-  async function handleSave(e) {
-    e.preventDefault()
-    setSaving(true)
-    try {
-      await onUpdatePerson(person.id, { name, bio, photoFile: photoFile || undefined })
-      setEditing(false)
-      setPhotoFile(null)
-    } finally {
-      setSaving(false)
+  async function handleSave(fields) {
+    await onUpdatePerson(person.id, fields)
+    setEditing(false)
+  }
+
+  function handleDelete() {
+    if (window.confirm(`Delete ${person.name}? This removes them from any memories they're tagged in.`)) {
+      onDeletePerson(person.id)
+      onClose()
     }
   }
 
   return (
     <Modal title={person.name} onClose={onClose}>
       {editing ? (
-        <form onSubmit={handleSave} className="flex flex-col gap-3">
-          <label className="flex flex-col gap-1 text-sm font-medium text-ink">
-            Name
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="rounded-lg border border-borderSoft bg-parchment px-3 py-2 text-sm font-normal text-ink focus:border-ink focus:outline-none"
-            />
-          </label>
-          <label className="flex flex-col gap-1 text-sm font-medium text-ink">
-            Bio
-            <textarea
-              value={bio}
-              onChange={(e) => setBio(e.target.value)}
-              rows={2}
-              placeholder="e.g. Where we met"
-              className="rounded-lg border border-borderSoft bg-parchment px-3 py-2 text-sm font-normal text-ink focus:border-ink focus:outline-none"
-            />
-          </label>
-          <label className="flex flex-col gap-1 text-sm font-medium text-ink">
-            Photo
-            <input
-              type="file"
-              accept="image/*"
-              onChange={(e) => setPhotoFile(e.target.files?.[0] || null)}
-              className="text-sm text-inkMuted file:mr-3 file:rounded-lg file:border file:border-borderSoft file:bg-card file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-ink"
-            />
-          </label>
-          <div className="mt-1 flex gap-2">
-            <button
-              type="button"
-              onClick={() => setEditing(false)}
-              className="flex-1 rounded-lg border border-borderSoft px-4 py-2 text-sm font-medium text-inkMuted hover:bg-tan hover:text-ink"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={saving}
-              className="flex-1 rounded-lg border-2 border-ink px-4 py-2 text-sm font-medium text-ink transition hover:bg-ink hover:text-parchment disabled:opacity-60"
-            >
-              {saving ? 'Saving…' : 'Save'}
-            </button>
-          </div>
-        </form>
+        <PersonForm
+          initialName={person.name}
+          initialBio={person.bio || ''}
+          submitLabel="Save"
+          onCancel={() => setEditing(false)}
+          onSubmit={handleSave}
+        />
       ) : (
         <>
           <div className="flex items-center gap-4">
@@ -110,13 +69,22 @@ export default function PersonProfileModal({ person, onUpdatePerson, onOpenItem,
               ) : (
                 <p className="text-sm italic text-inkMuted">No bio yet.</p>
               )}
-              <button
-                type="button"
-                onClick={() => setEditing(true)}
-                className="mt-1 text-xs font-medium text-inkMuted underline hover:text-ink"
-              >
-                Edit
-              </button>
+              <div className="mt-1 flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => setEditing(true)}
+                  className="text-xs font-medium text-inkMuted underline hover:text-ink"
+                >
+                  Edit
+                </button>
+                <button
+                  type="button"
+                  onClick={handleDelete}
+                  className="text-xs font-medium text-inkMuted underline hover:text-[#D85A30]"
+                >
+                  Delete
+                </button>
+              </div>
             </div>
           </div>
 

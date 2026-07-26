@@ -10,6 +10,8 @@ import MarkDoneModal from './components/MarkDoneModal'
 import MarkBookedModal from './components/MarkBookedModal'
 import ItemDetailModal from './components/ItemDetailModal'
 import PersonProfileModal from './components/PersonProfileModal'
+import PeopleView from './components/PeopleView'
+import AddPersonModal from './components/AddPersonModal'
 import { useLocalName } from './hooks/useLocalName'
 import { useCategories } from './hooks/useCategories'
 import { useItems } from './hooks/useItems'
@@ -27,7 +29,7 @@ export default function App() {
   const { items, addItem, updateItem, deleteItem } = useItems()
   const { byItem: interestByItem, toggle: toggleInterest } = useInterest()
   const { byItem: commentsByItem, addComment } = useComments()
-  const { people, createPerson, updatePerson } = usePeople()
+  const { people, createPerson, updatePerson, deletePerson } = usePeople()
   const { byItem: itemPeopleByItem, tagPerson, untagPerson } = useItemPeople()
 
   const [showAdd, setShowAdd] = useState(false)
@@ -36,6 +38,7 @@ export default function App() {
   const [markBookedItem, setMarkBookedItem] = useState(null)
   const [detailItem, setDetailItem] = useState(null)
   const [viewingPersonId, setViewingPersonId] = useState(null)
+  const [showAddPerson, setShowAddPerson] = useState(false)
   const viewingPerson = people.find((p) => p.id === viewingPersonId) || null
 
   if (!currentName || editingName) {
@@ -118,6 +121,13 @@ export default function App() {
           <UpcomingView items={items} onStatusChange={handleStatusChange} {...sharedListProps} />
         )}
         {view === 'memories' && <MemoriesView items={items} {...sharedListProps} />}
+        {view === 'people' && (
+          <PeopleView
+            people={people}
+            onOpenPerson={(person) => setViewingPersonId(person.id)}
+            onAddPerson={() => setShowAddPerson(true)}
+          />
+        )}
       </main>
 
       {showAdd && (
@@ -188,9 +198,14 @@ export default function App() {
         <PersonProfileModal
           person={viewingPerson}
           onUpdatePerson={updatePerson}
+          onDeletePerson={deletePerson}
           onOpenItem={handleOpenPersonMemory}
           onClose={() => setViewingPersonId(null)}
         />
+      )}
+
+      {showAddPerson && (
+        <AddPersonModal onClose={() => setShowAddPerson(false)} onCreatePerson={createPerson} />
       )}
     </div>
   )

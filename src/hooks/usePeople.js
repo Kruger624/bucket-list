@@ -75,5 +75,17 @@ export function usePeople() {
     }
   }, [people])
 
-  return { people, createPerson, updatePerson }
+  const deletePerson = useCallback(async (personId) => {
+    const existing = people.find((p) => p.id === personId)
+    if (existing?.photo) await deleteImage(pathFromUrl(existing.photo))
+
+    // item_people.person_id has ON DELETE CASCADE, so tags are cleaned up automatically.
+    const { error } = await supabase.from('people').delete().eq('id', personId)
+    if (error) {
+      console.error('Failed to delete person', error)
+      throw error
+    }
+  }, [people])
+
+  return { people, createPerson, updatePerson, deletePerson }
 }

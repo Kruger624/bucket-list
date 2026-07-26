@@ -10,7 +10,8 @@ function initials(name) {
 const SIZES = {
   sm: 'h-6 w-6 text-[10px]',
   md: 'h-9 w-9 text-xs',
-  lg: 'h-20 w-20 text-2xl'
+  lg: 'h-20 w-20 text-2xl',
+  xl: 'h-24 w-24 text-3xl'
 }
 
 export default function PersonAvatar({ person, size = 'md' }) {
@@ -21,14 +22,14 @@ export default function PersonAvatar({ person, size = 'md' }) {
       <img
         src={person.photo}
         alt={person.name}
-        className={`${sizeClass} shrink-0 rounded-full border-2 border-card object-cover`}
+        className={`${sizeClass} shrink-0 rounded-full border-2 border-borderSoft object-cover`}
       />
     )
   }
 
   return (
     <span
-      className={`flex ${sizeClass} shrink-0 items-center justify-center rounded-full border-2 border-card bg-tan font-medium text-ink`}
+      className={`flex ${sizeClass} shrink-0 items-center justify-center rounded-full border-2 border-borderSoft bg-tan font-medium text-ink`}
     >
       {initials(person.name)}
     </span>

@@ -6,8 +6,10 @@ export default function CategoryGroup({
   items,
   currentName,
   interestByItem,
+  commentsByItem,
   onToggleInterest,
-  onStatusChange,
+  onStatusChange = () => {},
+  onOpenDetail,
   onEdit,
   onDelete
 }) {
@@ -31,8 +33,10 @@ export default function CategoryGroup({
             color={color}
             currentName={currentName}
             interestPeople={interestByItem.get(item.id) || []}
+            commentCount={commentsByItem?.get(item.id)?.length || 0}
             onToggleInterest={() => onToggleInterest(item.id)}
             onStatusChange={(status) => onStatusChange(item, status)}
+            onOpenDetail={() => onOpenDetail(item)}
             onEdit={() => onEdit(item)}
             onDelete={() => onDelete(item)}
           />

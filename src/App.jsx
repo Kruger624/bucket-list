@@ -8,10 +8,12 @@ import AddItemModal from './components/AddItemModal'
 import EditItemModal from './components/EditItemModal'
 import MarkDoneModal from './components/MarkDoneModal'
 import MarkBookedModal from './components/MarkBookedModal'
+import ItemDetailModal from './components/ItemDetailModal'
 import { useLocalName } from './hooks/useLocalName'
 import { useCategories } from './hooks/useCategories'
 import { useItems } from './hooks/useItems'
 import { useInterest } from './hooks/useInterest'
+import { useComments } from './hooks/useComments'
 
 export default function App() {
   const [currentName, setCurrentName] = useLocalName()
@@ -21,11 +23,13 @@ export default function App() {
   const { categories, createCategory, colorFor } = useCategories()
   const { items, addItem, updateItem, deleteItem } = useItems()
   const { byItem: interestByItem, toggle: toggleInterest } = useInterest()
+  const { byItem: commentsByItem, addComment } = useComments()
 
   const [showAdd, setShowAdd] = useState(false)
   const [editingItem, setEditingItem] = useState(null)
   const [markDoneItem, setMarkDoneItem] = useState(null)
   const [markBookedItem, setMarkBookedItem] = useState(null)
+  const [detailItem, setDetailItem] = useState(null)
 
   if (!currentName || editingName) {
     return (
@@ -56,12 +60,24 @@ export default function App() {
     }
   }
 
+  function handleEditFromDetail(item) {
+    setDetailItem(null)
+    setEditingItem(item)
+  }
+
+  function handleDeleteFromDetail(item) {
+    setDetailItem(null)
+    handleDelete(item)
+  }
+
   const sharedListProps = {
     categories,
     colorFor,
     currentName,
     interestByItem,
+    commentsByItem,
     onToggleInterest: (itemId) => toggleInterest(itemId, currentName),
+    onOpenDetail: setDetailItem,
     onEdit: setEditingItem,
     onDelete: handleDelete
   }
@@ -119,6 +135,21 @@ export default function App() {
           item={markBookedItem}
           onClose={() => setMarkBookedItem(null)}
           onConfirm={(fields) => updateItem(markBookedItem.id, { status: 'booked', ...fields })}
+        />
+      )}
+
+      {detailItem && (
+        <ItemDetailModal
+          item={detailItem}
+          color={colorFor(detailItem.category_id)}
+          interestPeople={interestByItem.get(detailItem.id) || []}
+          comments={commentsByItem.get(detailItem.id) || []}
+          currentName={currentName}
+          onToggleInterest={() => toggleInterest(detailItem.id, currentName)}
+          onAddComment={addComment}
+          onEdit={() => handleEditFromDetail(detailItem)}
+          onDelete={() => handleDeleteFromDetail(detailItem)}
+          onClose={() => setDetailItem(null)}
         />
       )}
     </div>

@@ -1,24 +1,13 @@
 import { useMemo, useState } from 'react'
 import SearchFilterBar from './SearchFilterBar'
 import MemoryTile from './MemoryTile'
-import MemoryDetailModal from './MemoryDetailModal'
 import { MEMORY_SORT_OPTIONS, filterItems, sortItems, groupByCategory } from '../lib/filterSort'
 
-export default function MemoriesView({
-  items,
-  categories,
-  colorFor,
-  currentName,
-  interestByItem,
-  onToggleInterest,
-  onEdit,
-  onDelete
-}) {
+export default function MemoriesView({ items, categories, colorFor, interestByItem, onOpenDetail }) {
   const [search, setSearch] = useState('')
   const [categoryFilter, setCategoryFilter] = useState('')
   const [sortBy, setSortBy] = useState('date_desc')
   const [groupBy, setGroupBy] = useState('date')
-  const [detailItem, setDetailItem] = useState(null)
 
   const doneItems = useMemo(() => items.filter((i) => i.status === 'done'), [items])
 
@@ -31,16 +20,6 @@ export default function MemoriesView({
     () => (groupBy === 'category' ? groupByCategory(visible, categories) : null),
     [groupBy, visible, categories]
   )
-
-  function handleEdit(item) {
-    setDetailItem(null)
-    onEdit(item)
-  }
-
-  function handleDelete(item) {
-    setDetailItem(null)
-    onDelete(item)
-  }
 
   return (
     <div className="flex flex-col gap-4">
@@ -109,7 +88,7 @@ export default function MemoriesView({
                         key={item.id}
                         item={item}
                         color={color}
-                        onOpen={() => setDetailItem(item)}
+                        onOpen={() => onOpenDetail(item)}
                       />
                     ))}
                   </div>
@@ -126,23 +105,10 @@ export default function MemoriesView({
               key={item.id}
               item={item}
               color={colorFor(item.category_id)}
-              onOpen={() => setDetailItem(item)}
+              onOpen={() => onOpenDetail(item)}
             />
           ))}
         </div>
-      )}
-
-      {detailItem && (
-        <MemoryDetailModal
-          item={detailItem}
-          color={colorFor(detailItem.category_id)}
-          interestPeople={interestByItem.get(detailItem.id) || []}
-          currentName={currentName}
-          onToggleInterest={() => onToggleInterest(detailItem.id)}
-          onEdit={() => handleEdit(detailItem)}
-          onDelete={() => handleDelete(detailItem)}
-          onClose={() => setDetailItem(null)}
-        />
       )}
     </div>
   )

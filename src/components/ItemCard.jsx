@@ -9,9 +9,11 @@ export default function ItemCard({
   item,
   color,
   interestPeople,
+  commentCount = 0,
   currentName,
   onToggleInterest,
   onStatusChange,
+  onOpenDetail,
   onEdit,
   onDelete
 }) {
@@ -84,12 +86,19 @@ export default function ItemCard({
         <StatusPicker status={item.status} onChange={onStatusChange} />
       </div>
 
-      <div className="mt-3 border-t border-borderSoft pt-3">
+      <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-borderSoft pt-3">
         <InterestButton
           people={interestPeople}
           currentName={currentName}
           onToggle={onToggleInterest}
         />
+        <button
+          type="button"
+          onClick={onOpenDetail}
+          className="inline-flex items-center gap-1.5 rounded-full border border-borderSoft bg-card px-3 py-1 text-xs font-medium text-inkMuted hover:border-ink hover:text-ink"
+        >
+          💬 {commentCount > 0 ? commentCount : 'Comment'}
+        </button>
       </div>
     </div>
   )

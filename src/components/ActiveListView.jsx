@@ -9,8 +9,10 @@ export default function ActiveListView({
   colorFor,
   currentName,
   interestByItem,
+  commentsByItem,
   onToggleInterest,
   onStatusChange,
+  onOpenDetail,
   onEdit,
   onDelete
 }) {
@@ -65,8 +67,10 @@ export default function ActiveListView({
             items={group.items}
             currentName={currentName}
             interestByItem={interestByItem}
+            commentsByItem={commentsByItem}
             onToggleInterest={onToggleInterest}
             onStatusChange={onStatusChange}
+            onOpenDetail={onOpenDetail}
             onEdit={onEdit}
             onDelete={onDelete}
           />

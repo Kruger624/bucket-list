@@ -6,8 +6,10 @@ export default function UpcomingView({
   colorFor,
   currentName,
   interestByItem,
+  commentsByItem,
   onToggleInterest,
   onStatusChange,
+  onOpenDetail,
   onEdit,
   onDelete
 }) {
@@ -38,8 +40,10 @@ export default function UpcomingView({
             color={colorFor(item.category_id)}
             currentName={currentName}
             interestPeople={interestByItem.get(item.id) || []}
+            commentCount={commentsByItem?.get(item.id)?.length || 0}
             onToggleInterest={() => onToggleInterest(item.id)}
             onStatusChange={(status) => onStatusChange(item, status)}
+            onOpenDetail={() => onOpenDetail(item)}
             onEdit={() => onEdit(item)}
             onDelete={() => onDelete(item)}
           />

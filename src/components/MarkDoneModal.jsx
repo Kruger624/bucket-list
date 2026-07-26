@@ -1,7 +1,17 @@
 import { useState } from 'react'
 import Modal from './Modal'
+import PersonPicker from './PersonPicker'
 
-export default function MarkDoneModal({ item, onClose, onConfirm }) {
+export default function MarkDoneModal({
+  item,
+  people,
+  taggedPeople,
+  onTagPerson,
+  onUntagPerson,
+  onCreatePerson,
+  onClose,
+  onConfirm
+}) {
   const [memoryNote, setMemoryNote] = useState('')
   const [photoLink, setPhotoLink] = useState('')
   const [submitting, setSubmitting] = useState(false)
@@ -47,6 +57,17 @@ export default function MarkDoneModal({ item, onClose, onConfirm }) {
             className="rounded-lg border border-borderSoft bg-parchment px-3 py-2 text-sm font-normal text-ink placeholder:text-inkMuted focus:border-ink focus:outline-none"
           />
         </label>
+
+        <div className="flex flex-col gap-1 text-sm font-medium text-ink">
+          Tag people (optional)
+          <PersonPicker
+            people={people}
+            taggedPeople={taggedPeople}
+            onTag={(personId) => onTagPerson(item.id, personId)}
+            onUntag={(personId) => onUntagPerson(item.id, personId)}
+            onCreatePerson={onCreatePerson}
+          />
+        </div>
 
         <div className="mt-2 flex gap-2">
           <button

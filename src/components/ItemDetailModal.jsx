@@ -3,6 +3,7 @@ import CategoryBadge from './CategoryBadge'
 import StatusBadge from './StatusBadge'
 import InterestButton from './InterestButton'
 import CommentThread from './CommentThread'
+import PersonAvatar from './PersonAvatar'
 import { formatDate, formatDateRange } from '../lib/format'
 import { downloadIcs } from '../lib/ics'
 
@@ -11,9 +12,11 @@ export default function ItemDetailModal({
   color,
   interestPeople,
   comments,
+  taggedPeople = [],
   currentName,
   onToggleInterest,
   onAddComment,
+  onOpenPerson,
   onEdit,
   onDelete,
   onClose
@@ -85,6 +88,25 @@ export default function ItemDetailModal({
             >
               📷 View photos
             </a>
+          )}
+
+          {taggedPeople.length > 0 && (
+            <div className="mt-3">
+              <p className="text-xs font-medium text-inkMuted">Tagged</p>
+              <div className="mt-1.5 flex flex-wrap gap-2">
+                {taggedPeople.map((person) => (
+                  <button
+                    key={person.id}
+                    type="button"
+                    onClick={() => onOpenPerson(person)}
+                    className="inline-flex items-center gap-1.5 rounded-full border border-borderSoft bg-card py-1 pl-1 pr-2.5 text-xs font-medium text-ink hover:bg-tan"
+                  >
+                    <PersonAvatar person={person} size="sm" />
+                    {person.name}
+                  </button>
+                ))}
+              </div>
+            </div>
           )}
         </div>
       )}

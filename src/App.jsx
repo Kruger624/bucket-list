@@ -9,11 +9,14 @@ import EditItemModal from './components/EditItemModal'
 import MarkDoneModal from './components/MarkDoneModal'
 import MarkBookedModal from './components/MarkBookedModal'
 import ItemDetailModal from './components/ItemDetailModal'
+import PersonProfileModal from './components/PersonProfileModal'
 import { useLocalName } from './hooks/useLocalName'
 import { useCategories } from './hooks/useCategories'
 import { useItems } from './hooks/useItems'
 import { useInterest } from './hooks/useInterest'
 import { useComments } from './hooks/useComments'
+import { usePeople } from './hooks/usePeople'
+import { useItemPeople } from './hooks/useItemPeople'
 
 export default function App() {
   const [currentName, setCurrentName] = useLocalName()
@@ -24,12 +27,16 @@ export default function App() {
   const { items, addItem, updateItem, deleteItem } = useItems()
   const { byItem: interestByItem, toggle: toggleInterest } = useInterest()
   const { byItem: commentsByItem, addComment } = useComments()
+  const { people, createPerson, updatePerson } = usePeople()
+  const { byItem: itemPeopleByItem, tagPerson, untagPerson } = useItemPeople()
 
   const [showAdd, setShowAdd] = useState(false)
   const [editingItem, setEditingItem] = useState(null)
   const [markDoneItem, setMarkDoneItem] = useState(null)
   const [markBookedItem, setMarkBookedItem] = useState(null)
   const [detailItem, setDetailItem] = useState(null)
+  const [viewingPersonId, setViewingPersonId] = useState(null)
+  const viewingPerson = people.find((p) => p.id === viewingPersonId) || null
 
   if (!currentName || editingName) {
     return (
@@ -70,12 +77,23 @@ export default function App() {
     handleDelete(item)
   }
 
+  function taggedPeopleFor(itemId) {
+    return (itemPeopleByItem.get(itemId) || []).map((row) => row.person)
+  }
+
+  function handleOpenPersonMemory(item) {
+    setViewingPersonId(null)
+    const full = items.find((i) => i.id === item.id)
+    if (full) setDetailItem(full)
+  }
+
   const sharedListProps = {
     categories,
     colorFor,
     currentName,
     interestByItem,
     commentsByItem,
+    itemPeopleByItem,
     onToggleInterest: (itemId) => toggleInterest(itemId, currentName),
     onOpenDetail: setDetailItem,
     onEdit: setEditingItem,
@@ -117,6 +135,11 @@ export default function App() {
           item={editingItem}
           categories={categories}
           createCategory={createCategory}
+          people={people}
+          taggedPeople={taggedPeopleFor(editingItem.id)}
+          onTagPerson={tagPerson}
+          onUntagPerson={untagPerson}
+          onCreatePerson={createPerson}
           onClose={() => setEditingItem(null)}
           onSubmit={updateItem}
         />
@@ -125,6 +148,11 @@ export default function App() {
       {markDoneItem && (
         <MarkDoneModal
           item={markDoneItem}
+          people={people}
+          taggedPeople={taggedPeopleFor(markDoneItem.id)}
+          onTagPerson={tagPerson}
+          onUntagPerson={untagPerson}
+          onCreatePerson={createPerson}
           onClose={() => setMarkDoneItem(null)}
           onConfirm={(fields) => updateItem(markDoneItem.id, { status: 'done', ...fields })}
         />
@@ -144,12 +172,23 @@ export default function App() {
           color={colorFor(detailItem.category_id)}
           interestPeople={interestByItem.get(detailItem.id) || []}
           comments={commentsByItem.get(detailItem.id) || []}
+          taggedPeople={taggedPeopleFor(detailItem.id)}
           currentName={currentName}
           onToggleInterest={() => toggleInterest(detailItem.id, currentName)}
           onAddComment={addComment}
+          onOpenPerson={(person) => setViewingPersonId(person.id)}
           onEdit={() => handleEditFromDetail(detailItem)}
           onDelete={() => handleDeleteFromDetail(detailItem)}
           onClose={() => setDetailItem(null)}
+        />
+      )}
+
+      {viewingPerson && (
+        <PersonProfileModal
+          person={viewingPerson}
+          onUpdatePerson={updatePerson}
+          onOpenItem={handleOpenPersonMemory}
+          onClose={() => setViewingPersonId(null)}
         />
       )}
     </div>

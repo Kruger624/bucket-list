@@ -1,8 +1,20 @@
 import { useState } from 'react'
 import Modal from './Modal'
 import CategorySelect from './CategorySelect'
+import PersonPicker from './PersonPicker'
 
-export default function EditItemModal({ item, categories, createCategory, onClose, onSubmit }) {
+export default function EditItemModal({
+  item,
+  categories,
+  createCategory,
+  people,
+  taggedPeople,
+  onTagPerson,
+  onUntagPerson,
+  onCreatePerson,
+  onClose,
+  onSubmit
+}) {
   const [title, setTitle] = useState(item.title)
   const [categoryId, setCategoryId] = useState(item.category_id || '')
   const [newCategoryName, setNewCategoryName] = useState('')
@@ -157,6 +169,17 @@ export default function EditItemModal({ item, categories, createCategory, onClos
                 className="rounded-lg border border-borderSoft bg-parchment px-3 py-2 text-sm font-normal text-ink placeholder:text-inkMuted focus:border-ink focus:outline-none"
               />
             </label>
+
+            <div className="flex flex-col gap-1 text-sm font-medium text-ink">
+              Tag people
+              <PersonPicker
+                people={people}
+                taggedPeople={taggedPeople}
+                onTag={(personId) => onTagPerson(item.id, personId)}
+                onUntag={(personId) => onUntagPerson(item.id, personId)}
+                onCreatePerson={onCreatePerson}
+              />
+            </div>
           </div>
         )}
 

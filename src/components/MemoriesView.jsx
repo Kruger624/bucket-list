@@ -3,7 +3,14 @@ import SearchFilterBar from './SearchFilterBar'
 import MemoryTile from './MemoryTile'
 import { MEMORY_SORT_OPTIONS, filterItems, sortItems, groupByCategory } from '../lib/filterSort'
 
-export default function MemoriesView({ items, categories, colorFor, interestByItem, onOpenDetail }) {
+export default function MemoriesView({
+  items,
+  categories,
+  colorFor,
+  interestByItem,
+  itemPeopleByItem,
+  onOpenDetail
+}) {
   const [search, setSearch] = useState('')
   const [categoryFilter, setCategoryFilter] = useState('')
   const [sortBy, setSortBy] = useState('date_desc')
@@ -88,6 +95,7 @@ export default function MemoriesView({ items, categories, colorFor, interestByIt
                         key={item.id}
                         item={item}
                         color={color}
+                        taggedPeople={(itemPeopleByItem?.get(item.id) || []).map((r) => r.person)}
                         onOpen={() => onOpenDetail(item)}
                       />
                     ))}
@@ -105,6 +113,7 @@ export default function MemoriesView({ items, categories, colorFor, interestByIt
               key={item.id}
               item={item}
               color={colorFor(item.category_id)}
+              taggedPeople={(itemPeopleByItem?.get(item.id) || []).map((r) => r.person)}
               onOpen={() => onOpenDetail(item)}
             />
           ))}

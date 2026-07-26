@@ -133,6 +133,7 @@ export default function App() {
       {editingItem && (
         <EditItemModal
           item={editingItem}
+          color={colorFor(editingItem.category_id)}
           categories={categories}
           createCategory={createCategory}
           people={people}

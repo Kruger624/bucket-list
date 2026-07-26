@@ -5,15 +5,19 @@ export default function MemoryTile({ item, color, taggedPeople = [], onOpen }) {
   return (
     <button type="button" onClick={onOpen} className="flex flex-col gap-2 text-left">
       <div
-        className="relative flex aspect-square items-center justify-center rounded-card border-2"
+        className="relative flex aspect-square items-center justify-center overflow-hidden rounded-card border-2"
         style={{ backgroundColor: color.badgeBg, borderColor: color.accent }}
       >
-        <span className="font-serif text-4xl" style={{ color: color.badgeText }}>
-          {item.title.trim().charAt(0).toUpperCase() || '✦'}
-        </span>
+        {item.icon_image ? (
+          <img src={item.icon_image} alt="" className="absolute inset-0 h-full w-full object-cover" />
+        ) : (
+          <span className="font-serif text-4xl" style={{ color: color.badgeText }}>
+            {item.title.trim().charAt(0).toUpperCase() || '✦'}
+          </span>
+        )}
 
         {taggedPeople.length > 0 && (
-          <div className="absolute bottom-2 left-2 flex -space-x-2">
+          <div className="absolute bottom-2 left-2 z-10 flex -space-x-2">
             {taggedPeople.slice(0, 4).map((person) => (
               <PersonAvatar key={person.id} person={person} size="sm" />
             ))}

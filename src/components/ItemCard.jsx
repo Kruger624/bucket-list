@@ -22,8 +22,24 @@ export default function ItemCard({
       className="rounded-card border-2 bg-card p-4"
       style={{ borderColor: color.accent }}
     >
-      <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
+      <div className="flex items-start gap-3">
+        <div
+          className="h-14 w-14 shrink-0 overflow-hidden rounded-lg border-2"
+          style={{ borderColor: color.accent, backgroundColor: color.badgeBg }}
+        >
+          {item.icon_image ? (
+            <img src={item.icon_image} alt="" className="h-full w-full object-cover" />
+          ) : (
+            <span
+              className="flex h-full w-full items-center justify-center font-serif text-xl"
+              style={{ color: color.badgeText }}
+            >
+              {item.title.trim().charAt(0).toUpperCase() || '✦'}
+            </span>
+          )}
+        </div>
+
+        <div className="min-w-0 flex-1">
           <h3 className="truncate font-serif text-lg text-ink">{item.title}</h3>
           <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
             <CategoryBadge name={item.category?.name} color={color} />

@@ -24,12 +24,16 @@ export default function ItemDetailModal({
   return (
     <Modal title={item.title} onClose={onClose}>
       <div
-        className="flex h-32 items-center justify-center rounded-lg border-2"
+        className="relative flex h-32 items-center justify-center overflow-hidden rounded-lg border-2"
         style={{ backgroundColor: color.badgeBg, borderColor: color.accent }}
       >
-        <span className="font-serif text-6xl" style={{ color: color.badgeText }}>
-          {item.title.trim().charAt(0).toUpperCase() || '✦'}
-        </span>
+        {item.banner_image ? (
+          <img src={item.banner_image} alt="" className="absolute inset-0 h-full w-full object-cover" />
+        ) : (
+          <span className="font-serif text-6xl" style={{ color: color.badgeText }}>
+            {item.title.trim().charAt(0).toUpperCase() || '✦'}
+          </span>
+        )}
       </div>
 
       <div className="mt-3 flex flex-wrap items-center gap-1.5">

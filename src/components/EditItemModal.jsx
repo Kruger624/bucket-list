@@ -2,9 +2,12 @@ import { useState } from 'react'
 import Modal from './Modal'
 import CategorySelect from './CategorySelect'
 import PersonPicker from './PersonPicker'
+import ImageUploadField from './ImageUploadField'
+import { compressImage, uploadImage, deleteImage, pathFromUrl } from '../lib/storage'
 
 export default function EditItemModal({
   item,
+  color,
   categories,
   createCategory,
   people,
@@ -25,8 +28,57 @@ export default function EditItemModal({
   const [photoLink, setPhotoLink] = useState(item.photo_link || '')
   const [startDate, setStartDate] = useState(item.planned_start_date || '')
   const [endDate, setEndDate] = useState(item.planned_end_date || '')
+  const [iconFile, setIconFile] = useState(null)
+  const [iconPreview, setIconPreview] = useState(item.icon_image || null)
+  const [iconRemoved, setIconRemoved] = useState(false)
+  const [bannerFile, setBannerFile] = useState(null)
+  const [bannerPreview, setBannerPreview] = useState(item.banner_image || null)
+  const [bannerRemoved, setBannerRemoved] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
+
+  const placeholder = {
+    accent: color.accent,
+    badgeBg: color.badgeBg,
+    badgeText: color.badgeText,
+    letter: item.title.trim().charAt(0).toUpperCase() || '✦'
+  }
+
+  function handleIconSelected(file) {
+    setIconFile(file)
+    setIconPreview(URL.createObjectURL(file))
+    setIconRemoved(false)
+  }
+
+  function handleIconRemove() {
+    setIconFile(null)
+    setIconPreview(null)
+    setIconRemoved(true)
+  }
+
+  function handleBannerSelected(file) {
+    setBannerFile(file)
+    setBannerPreview(URL.createObjectURL(file))
+    setBannerRemoved(false)
+  }
+
+  function handleBannerRemove() {
+    setBannerFile(null)
+    setBannerPreview(null)
+    setBannerRemoved(true)
+  }
+
+  async function resolveImage(file, removed, existingUrl, path, maxWidthOrHeight) {
+    if (file) {
+      const compressed = await compressImage(file, { maxWidthOrHeight })
+      return uploadImage(path, compressed)
+    }
+    if (removed) {
+      if (existingUrl) await deleteImage(pathFromUrl(existingUrl))
+      return null
+    }
+    return existingUrl
+  }
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -48,6 +100,11 @@ export default function EditItemModal({
         finalCategoryId = category.id
       }
 
+      const [iconImage, bannerImage] = await Promise.all([
+        resolveImage(iconFile, iconRemoved, item.icon_image, `items/${item.id}/icon.jpg`, 600),
+        resolveImage(bannerFile, bannerRemoved, item.banner_image, `items/${item.id}/banner.jpg`, 1600)
+      ])
+
       await onSubmit(item.id, {
         title: title.trim(),
         description: description.trim() || null,
@@ -57,7 +114,9 @@ export default function EditItemModal({
         memory_note: memoryNote.trim() || null,
         photo_link: photoLink.trim() || null,
         planned_start_date: startDate || null,
-        planned_end_date: endDate || null
+        planned_end_date: endDate || null,
+        icon_image: iconImage,
+        banner_image: bannerImage
       })
       onClose()
     } catch (err) {
@@ -120,6 +179,25 @@ export default function EditItemModal({
             className="rounded-lg border border-borderSoft bg-parchment px-3 py-2 text-sm font-normal text-ink placeholder:text-inkMuted focus:border-ink focus:outline-none"
           />
         </label>
+
+        <div className="flex flex-wrap gap-4 rounded-lg bg-tan p-3">
+          <ImageUploadField
+            label="Icon"
+            previewUrl={iconPreview}
+            placeholder={placeholder}
+            aspect="aspect-square"
+            onFileSelected={handleIconSelected}
+            onRemove={handleIconRemove}
+          />
+          <ImageUploadField
+            label="Banner"
+            previewUrl={bannerPreview}
+            placeholder={placeholder}
+            aspect="aspect-[2/1]"
+            onFileSelected={handleBannerSelected}
+            onRemove={handleBannerRemove}
+          />
+        </div>
 
         {item.status === 'booked' && (
           <div className="flex flex-col gap-3 rounded-lg bg-tan p-3">

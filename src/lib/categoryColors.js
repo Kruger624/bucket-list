@@ -1,7 +1,9 @@
 // Muted, warm palette for category accents — see design brief "Bucket List App Visual Refresh".
 // Each known category name maps to a fixed color trio. Categories created on the fly get
-// whichever of the extra/unused colors haven't been claimed yet, falling back to the neutral
-// "misc" treatment once the palette is exhausted.
+// whichever of the 11 rotating colors haven't been claimed yet, in creation order. Once all 11
+// are in use, assignment cycles back to the start and repeats. Warm gray (MISC_COLOR) is
+// reserved exclusively for genuinely uncategorized items — it is never assigned to a named
+// category.
 const PALETTE = [
   {
     key: 'travel',
@@ -51,9 +53,39 @@ const PALETTE = [
     accent: '#3B6D11',
     badgeBg: '#97C459',
     badgeText: '#173404'
+  },
+  {
+    key: 'rust',
+    names: [],
+    accent: '#8A4B2E',
+    badgeBg: '#C68A5F',
+    badgeText: '#3A1F0E'
+  },
+  {
+    key: 'olive',
+    names: [],
+    accent: '#6B6423',
+    badgeBg: '#B7AE5C',
+    badgeText: '#33300F'
+  },
+  {
+    key: 'lavender',
+    names: [],
+    accent: '#5B4E77',
+    badgeBg: '#A79BC4',
+    badgeText: '#2E2545'
+  },
+  {
+    key: 'seafoam',
+    names: [],
+    accent: '#2E6B6B',
+    badgeBg: '#7FB8B8',
+    badgeText: '#0F3232'
   }
 ]
 
+// Reserved exclusively for uncategorized items — never assigned to a named category,
+// and not part of the 11-color rotation above.
 export const MISC_COLOR = {
   key: 'misc',
   accent: '#5F5E5A',
@@ -75,22 +107,20 @@ export function buildCategoryColorMap(categories) {
   }
 
   const leftovers = PALETTE.filter((p) => !usedKeys.has(p.key))
-  let leftoverIndex = 0
 
   // Assign leftover colors in creation order so a brand-new category never
-  // reshuffles the color already assigned to an older one.
+  // reshuffles the color already assigned to an older one. Once the leftover
+  // pool is exhausted, cycle back to the start and repeat rather than
+  // falling back to the uncategorized gray.
   const byCreatedAt = [...categories].sort(
     (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
   )
 
+  let leftoverIndex = 0
   for (const category of byCreatedAt) {
     if (map.has(category.id)) continue
-    if (leftoverIndex < leftovers.length) {
-      map.set(category.id, leftovers[leftoverIndex])
-      leftoverIndex += 1
-    } else {
-      map.set(category.id, MISC_COLOR)
-    }
+    map.set(category.id, leftovers[leftoverIndex % leftovers.length])
+    leftoverIndex += 1
   }
 
   return map
